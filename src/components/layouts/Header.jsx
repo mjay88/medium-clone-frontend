@@ -73,7 +73,13 @@ export default function Header() {
 				<div className="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul className="navbar-nav me-auto mb-2 mb-lg-0">
 						<li className="nav-item">
-							<Link className="nav-link active" aria-current="page" to="/">
+							<Link
+								className={`nav-link ${
+									location.pathname === "/" ? "active" : ""
+								}`}
+								aria-current="page"
+								to="/"
+							>
 								<i className="bi bi-house"></i> Home
 							</Link>
 						</li>
@@ -81,7 +87,20 @@ export default function Header() {
 							<>
 								<li className="nav-item">
 									<Link
-										className="nav-link active"
+										className={`nav-link ${
+											location.pathname === "/write" ? "active" : ""
+										}`}
+										aria-current="page"
+										to="/write"
+									>
+										<i className="bi bi-pencil"></i> Write
+									</Link>
+								</li>
+								<li className="nav-item">
+									<Link
+										className={`nav-link ${
+											location.pathname === "/profile" ? "active" : ""
+										}`}
 										aria-current="page"
 										to="/profile"
 									>
@@ -102,7 +121,9 @@ export default function Header() {
 							<>
 								<li className="nav-item">
 									<Link
-										className="nav-link active"
+										className={`nav-link ${
+											location.pathname === "/login" ? "active" : ""
+										}`}
 										aria-current="page"
 										to="/login"
 									>
@@ -111,7 +132,9 @@ export default function Header() {
 								</li>
 								<li className="nav-item">
 									<Link
-										className="nav-link active"
+										className={`nav-link ${
+											location.pathname === "/register" ? "active" : ""
+										}`}
 										aria-current="page"
 										to="/register"
 									>
