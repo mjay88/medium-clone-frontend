@@ -1,0 +1,4 @@
+.ql-editor {
+	overflow-y: scroll;
+	resize: vertical;
+}

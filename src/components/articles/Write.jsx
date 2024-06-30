@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useValidation from "../custom/useValidation";
 import ReactQuill from "react-quill";
 import Spinner from "../layouts/Spinner";
@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { BASE_URL, getConfig, modules } from "../../helpers/config";
 import axios from "axios";
+import useTag from "../custom/useTag";
+import { toast } from "react-toastify";
 
 export default function Write() {
 	const { isLoggedIn, token } = useSelector((state) => state.user);
@@ -18,15 +20,42 @@ export default function Write() {
 	const [errors, setErrors] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+	const fetchedTags = useTag();
+	const [choosenTags, setChoosenTags] = useState([]);
+	//cannot access Write.jsx if not logged in
+	useEffect(() => {
+		if (isLoggedIn) {
+			navigate("/login");
+		}
+	}, [isLoggedIn]);
+
+	const handleTagsInputChange = (e) => {
+		let exists = choosenTags.find((tag) => tag === e.target.value);
+		if (exists) {
+			const updatedTags = choosenTags.filter((tag) => tag !== e.target.value);
+			setChoosenTags(updatedTags);
+		} else {
+			setChoosenTags([...choosenTags, e.target.value]);
+		}
+	};
+
 	const storeArticle = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 		setErrors([]);
+
+		const formData = new FormData();
+		formData.append("image", article.image);
+		formData.append("title", article.title);
+		formData.append("excerpt", article.excerpt);
+		formData.append("body", article.body);
+		formData.append("tags", choosenTags);
+
 		try {
 			const response = await axios.post(
 				`${BASE_URL}/add/article`,
-				article,
-				getConfig(token)
+				formData,
+				getConfig(token, "multipart/form-data")
 			);
 			setLoading(false);
 			toast.success(response.data.message);
@@ -123,6 +152,32 @@ export default function Write() {
 									className="form-control"
 								/>
 								{useValidation(errors, "image")}
+								{article.image && (
+									<img
+										src={URL.createObjectURL(article.image)}
+										alt="image"
+										width={150}
+										height={150}
+										className="rounded my-2"
+									></img>
+								)}
+							</div>
+							<div className="mb-3 d-flex flex-wrap">
+								{fetchedTags?.map((tag) => (
+									<div key={tag.id} className="form-check">
+										<input
+											id={tag.id}
+											type="checkbox"
+											value={tag.id}
+											checked={choosenTags.some((item) => item == tag.id)}
+											onChange={(e) => handleTagsInputChange(e)}
+											className="form-check-input mx-1"
+										/>
+										<label htmlFor={tag.id} className="form-check-label">
+											{tag.name}
+										</label>
+									</div>
+								))}
 							</div>
 							<div className="mb-3">
 								{loading ? (
