@@ -24,7 +24,7 @@ export default function Write() {
 	const [choosenTags, setChoosenTags] = useState([]);
 	//cannot access Write.jsx if not logged in
 	useEffect(() => {
-		if (isLoggedIn) {
+		if (!isLoggedIn) {
 			navigate("/login");
 		}
 	}, [isLoggedIn]);
