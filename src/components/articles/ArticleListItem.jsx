@@ -13,7 +13,7 @@ export default function ArticleListItem({ article }) {
 						width={40}
 						height={40}
 						className="rounded-circle me-2"
-						alt="article.title"
+						alt={article.user.name}
 					></img>
 					<span className="text-primary fw-bold">{article.user.name}</span>
 					<span className="mx-2">|</span>
