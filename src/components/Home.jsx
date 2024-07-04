@@ -8,11 +8,15 @@ import SwitchNav from "./layouts/SwitchNav";
 import { useSelector } from "react-redux";
 
 export default function Home() {
-	const { token } = useSelector((state) => state.user);
+	const { token, isLoggedIn } = useSelector((state) => state.user);
 	const [articles, setArticles] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [articleByTag, setArticleByTag] = useState("");
 	const [articleByFollowing, setArticleByFollowing] = useState(false);
+	const [meta, setMeta] = useState({
+		to: 0,
+		total: 0,
+	});
 
 	useEffect(() => {
 		const fetchArticles = async () => {
@@ -23,6 +27,7 @@ export default function Home() {
 						`${BASE_URL}/tag/${articleByTag}/articles`
 					);
 					setArticles(response.data.data);
+					setMeta(response.data.meta);
 					setLoading(false);
 				} else if (articleByFollowing) {
 					const response = await axios.get(
@@ -30,10 +35,12 @@ export default function Home() {
 						getConfig(token)
 					);
 					setArticles(response.data.data);
+					setMeta(response.data.meta);
 					setLoading(false);
 				} else {
 					const response = await axios.get(`${BASE_URL}/articles`);
 					setArticles(response.data.data);
+					setMeta(response.data.meta);
 					setLoading(false);
 				}
 			} catch (error) {
@@ -43,6 +50,34 @@ export default function Home() {
 		};
 		fetchArticles();
 	}, [articleByTag, articleByFollowing]);
+
+	const fetchNextArticles = async () => {
+		try {
+			if (articleByTag) {
+				const response = await axios.get(
+					`${BASE_URL}/tag/${articleByTag}/articles?page=${(meta.current_page += 1)}`
+				);
+				setArticles((prevArticles) => [...prevArticles, ...response.data.data]);
+				setMeta(response.data.meta);
+			} else if (articleByFollowing) {
+				const response = await axios.get(
+					`${BASE_URL}/followings/articles?page=${(meta.current_page += 1)}`,
+					getConfig(token)
+				);
+				setArticles((prevArticles) => [...prevArticles, ...response.data.data]);
+				setMeta(response.data.meta);
+			} else {
+				const response = await axios.get(
+					`${BASE_URL}/articles?page=${(meta.current_page += 1)}`
+				);
+				setArticles((prevArticles) => [...prevArticles, ...response.data.data]);
+				setMeta(response.data.meta);
+			}
+		} catch (error) {
+			setLoading(false);
+			console.log(error);
+		}
+	};
 	return (
 		<div className="container">
 			{loading ? (
@@ -52,13 +87,19 @@ export default function Home() {
 			) : (
 				<div className="row my-5">
 					{/* {	switching between all the articles and the articles of the users we follow} */}
-					<SwitchNav
-						articleByFollowing={articleByFollowing}
-						setArticleByFollowing={setArticleByFollowing}
-						setArticleByTag={setArticleByTag}
-					/>
+					{isLoggedIn && (
+						<SwitchNav
+							articleByFollowing={articleByFollowing}
+							setArticleByFollowing={setArticleByFollowing}
+							setArticleByTag={setArticleByTag}
+						/>
+					)}
 					{/* {display all of the published articles} */}
-					<ArticleList articles={articles} />
+					<ArticleList
+						articles={articles}
+						fetchNextArticles={fetchNextArticles}
+						meta={meta}
+					/>
 					{/* {display all of the tags} */}
 					<Tags
 						setArticleByTag={setArticleByTag}
