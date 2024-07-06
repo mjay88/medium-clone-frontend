@@ -7,6 +7,7 @@ import Header from "./components/layouts/Header";
 import Profile from "./components/user/Profile";
 import Write from "./components/articles/Write";
 import Article from "./components/articles/Article";
+import Bookmarked from "./components/user/articles/Bookmarked";
 
 export default function App() {
 	return (
@@ -19,6 +20,7 @@ export default function App() {
 				<Route path="/profile" element={<Profile />} />
 				<Route path="/write" element={<Write />} />
 				<Route path="/articles/:slug" element={<Article />} />
+				<Route path="/bookmarked" element={<Bookmarked />} />
 			</Routes>
 		</BrowserRouter>
 	);

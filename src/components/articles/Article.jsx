@@ -3,24 +3,20 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { BASE_URL, getConfig } from "../../helpers/config";
 import Spinner from "../layouts/Spinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Parser } from "html-to-react";
+import { setCurrentUser } from "../../redux/slices/userSlice";
+import { bookmark } from "../../redux/slices/bookmarkSlice";
 
 export default function Article() {
 	const { isLoggedIn, token, user } = useSelector((state) => state.user);
+	const { bookmarked } = useSelector((state) => state.bookmark);
 	const [article, setArticle] = useState(null);
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
 	const { slug } = useParams();
-
-	const checkIfFollowingUser = () =>
-		article?.user?.followers?.findIndex(
-			(item) => item.pivot.follower_id === user?.id
-		) !== -1 ? (
-			<button className="border-0 bg-light text-success ms-1">Unfollow</button>
-		) : (
-			<button className="border-0 bg-light text-success ms-1">Follow</button>
-		);
+	const dispatch = useDispatch();
+	const exists = bookmarked.find((item) => item.id === article?.id);
 
 	useEffect(() => {
 		const fetchArticleBySlug = async () => {
@@ -38,7 +34,88 @@ export default function Article() {
 			}
 		};
 		fetchArticleBySlug();
-	}, []);
+	}, [slug]);
+
+	const followUser = async (follower_id, following_id) => {
+		try {
+			const response = await axios.post(
+				`${BASE_URL}/user/follow`,
+				{
+					following_id,
+					follower_id,
+				},
+				getConfig(token)
+			);
+			article.user = response.data.following;
+			dispatch(setCurrentUser(response.data.follower));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const unFollowUser = async (follower_id, following_id) => {
+		try {
+			const response = await axios.post(
+				`${BASE_URL}/user/unfollow`,
+				{
+					following_id,
+					follower_id,
+				},
+				getConfig(token)
+			);
+			article.user = response.data.following;
+			dispatch(setCurrentUser(response.data.follower));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const showClapButton = () =>
+		isLoggedIn ? (
+			<button
+				className="border-0 bg-light text-danger ms-1"
+				onClick={() => addClap()}
+			>
+				<i className="bi bi-balloon-heart-fill"></i>
+			</button>
+		) : (
+			<Link className="border-0 bg-light text-danger ms-1" to="/login">
+				<i className="bi bi-balloon-heart-fill"></i>
+			</Link>
+		);
+
+	const checkIfFollowingUser = () =>
+		article?.user?.followers?.findIndex(
+			(item) => item.pivot.follower_id === user?.id
+		) !== -1 ? (
+			<button
+				className="border-0 bg-light text-success ms-1"
+				onClick={() => unFollowUser(user?.id, article?.user?.id)}
+			>
+				Unfollow
+			</button>
+		) : (
+			<button
+				className="border-0 bg-light text-success ms-1"
+				onClick={() => followUser(user?.id, article?.user?.id)}
+			>
+				Follow
+			</button>
+		);
+
+	const addClap = async () => {
+		try {
+			const response = await axios.get(
+				`${BASE_URL}/clap/${slug}/article`,
+
+				getConfig(token)
+			);
+			setArticle(response.data.data);
+			article.user = response.data.following;
+			dispatch(setCurrentUser(response.data.follower));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<div className="container">
@@ -77,7 +154,7 @@ export default function Article() {
 										checkIfFollowingUser()
 									) : (
 										<Link
-											className="border-0 bg-light text-success ms-1"
+											className="text-decoration-none border-0 btn bg-light text-success ms-1"
 											to="/login"
 										>
 											Follow
@@ -87,6 +164,7 @@ export default function Article() {
 									<span className="text-muted">{article?.created_at}</span>
 								</div>
 								<div>
+									{showClapButton()}
 									<span className="mx-2 fw-bold">{article?.clapsCount}</span>
 								</div>
 							</div>
@@ -133,7 +211,12 @@ export default function Article() {
 								</div>
 								<div>
 									{isLoggedIn ? (
-										<button className="btn btn-sm btn-light">
+										<button
+											className={`btn btn-sm btn-${
+												exists ? "warning" : "light"
+											}`}
+											onClick={() => dispatch(bookmark(article))}
+										>
 											<i className="bi bi-bookmark-plus"></i>
 										</button>
 									) : (

@@ -1,9 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { bookmark } from "../../redux/slices/bookmarkSlice";
+import { useDispatch } from "react-redux";
 
 export default function ArticleListItem({ article }) {
 	const { isLoggedIn } = useSelector((state) => state.user);
+	const { bookmarked } = useSelector((state) => state.bookmark);
+	const exists = bookmarked.find((item) => item.id === article?.id);
+	const dispatch = useDispatch();
 	return (
 		<div className="card mb-2">
 			<div className="card-header d-flex bg-white justify-content-start">
@@ -50,7 +55,10 @@ export default function ArticleListItem({ article }) {
 				</div>
 				<div>
 					{isLoggedIn ? (
-						<button className="btn btn-sm btn-light">
+						<button
+							className={`btn btn-sm btn-${exists ? "warning" : "light"}`}
+							onClick={() => dispatch(bookmark(article))}
+						>
 							<i className="bi bi-bookmark-plus"></i>
 						</button>
 					) : (

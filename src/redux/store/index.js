@@ -11,10 +11,12 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userReducer from "../slices/userSlice";
+import bookmarkReducer from "../slices/bookmarkSlice";
 
 //combine all reducers
 const rootReducer = combineReducers({
 	user: userReducer,
+	bookmark: bookmarkReducer,
 });
 
 //configure persist to persist data once we refresh or we move between components

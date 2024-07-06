@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 
 export default function Header() {
 	const { isLoggedIn, token, user } = useSelector((state) => state.user);
+	const { bookmarked } = useSelector((state) => state.bookmark);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const location = useLocation();
@@ -115,6 +116,18 @@ export default function Header() {
 									>
 										<i className="bi bi-person-fill-down"></i> Logout
 									</button>
+								</li>
+								<li className="nav-item">
+									<Link
+										className={`nav-link ${
+											location.pathname === "/bookmarked" ? "active" : ""
+										}`}
+										aria-current="page"
+										to="/bookmarked"
+									>
+										<i className="bi bi-bookmark-plus"></i> (
+										{bookmarked?.length})
+									</Link>
 								</li>
 							</>
 						) : (
