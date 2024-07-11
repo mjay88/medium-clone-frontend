@@ -8,6 +8,7 @@ import Profile from "./components/user/Profile";
 import Write from "./components/articles/Write";
 import Article from "./components/articles/Article";
 import Bookmarked from "./components/user/articles/Bookmarked";
+import UpdateArticle from "./components/user/articles/UpdateArticle";
 
 export default function App() {
 	return (
@@ -20,6 +21,7 @@ export default function App() {
 				<Route path="/profile" element={<Profile />} />
 				<Route path="/write" element={<Write />} />
 				<Route path="/articles/:slug" element={<Article />} />
+				<Route path="/update/article/:slug" element={<UpdateArticle />} />
 				<Route path="/bookmarked" element={<Bookmarked />} />
 			</Routes>
 		</BrowserRouter>

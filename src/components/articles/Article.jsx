@@ -151,7 +151,7 @@ export default function Article() {
 										{article?.user?.name}
 									</span>
 									{isLoggedIn ? (
-										checkIfFollowingUser()
+										article?.user?.id !== user?.id && checkIfFollowingUser()
 									) : (
 										<Link
 											className="text-decoration-none border-0 btn bg-light text-success ms-1"
