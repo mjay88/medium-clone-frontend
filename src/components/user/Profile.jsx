@@ -3,10 +3,14 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import SideBar from "./partials/SideBar";
 import UserArticles from "./articles/UserArticles";
+import useTitle from "../custom/useTitle";
 
 export default function Profile() {
 	const { isLoggedIn } = useSelector((state) => state.user);
 	const navigate = useNavigate();
+
+	//change page title
+	useTitle("Profile");
 
 	useEffect(() => {
 		if (!isLoggedIn) navigate("/login");

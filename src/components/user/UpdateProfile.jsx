@@ -7,6 +7,7 @@ import axios from "axios";
 import { BASE_URL, getConfig } from "../../helpers/config";
 import { setCurrentUser } from "../../redux/slices/userSlice";
 import { toast } from "react-toastify";
+import useTitle from "../custom/useTitle";
 
 export default function UpdateProfile() {
 	const { user, token, isLoggedIn } = useSelector((state) => state.user);
@@ -20,6 +21,8 @@ export default function UpdateProfile() {
 	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
 
+	//change page title
+	useTitle("Update Profile");
 	useEffect(() => {
 		if (!isLoggedIn) navigate("/login");
 	}, [isLoggedIn]);

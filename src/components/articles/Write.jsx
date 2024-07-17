@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { BASE_URL, getConfig, modules } from "../../helpers/config";
 import axios from "axios";
 import useTag from "../custom/useTag";
+import useTitle from "../custom/useTitle";
 import { toast } from "react-toastify";
 
 export default function Write() {
@@ -22,6 +23,9 @@ export default function Write() {
 	const navigate = useNavigate();
 	const fetchedTags = useTag();
 	const [choosenTags, setChoosenTags] = useState([]);
+
+	useTitle("Write");
+
 	//cannot access Write.jsx if not logged in
 	useEffect(() => {
 		if (!isLoggedIn) {

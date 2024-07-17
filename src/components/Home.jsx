@@ -6,6 +6,7 @@ import Tags from "./tags/Tags";
 import Spinner from "./layouts/Spinner";
 import SwitchNav from "./layouts/SwitchNav";
 import { useSelector } from "react-redux";
+import useTitle from "./custom/useTitle";
 
 export default function Home() {
 	const { token, isLoggedIn } = useSelector((state) => state.user);
@@ -17,6 +18,9 @@ export default function Home() {
 		to: 0,
 		total: 0,
 	});
+
+	//change page title
+	useTitle("Home");
 
 	useEffect(() => {
 		const fetchArticles = async () => {

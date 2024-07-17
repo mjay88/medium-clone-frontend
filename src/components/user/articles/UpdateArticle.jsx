@@ -10,6 +10,7 @@ import useTag from "../../custom/useTag";
 import { toast } from "react-toastify";
 import Spinner from "../../layouts/Spinner";
 import { setCurrentUser } from "../../../redux/slices/userSlice";
+import useTitle from "../../custom/useTitle";
 
 export default function UpdateArticle() {
 	const { isLoggedIn, token } = useSelector((state) => state.user);
@@ -29,8 +30,11 @@ export default function UpdateArticle() {
 	const fetchedTags = useTag();
 	const [choosenTags, setChoosenTags] = useState([]);
 	const { slug } = useParams();
-	//cannot access Write.jsx if not logged in
 
+	//change page title
+	useTitle("Update Articles");
+
+	//cannot access Write.jsx if not logged in
 	useEffect(() => {
 		if (!isLoggedIn) navigate("/login");
 		const fetchArticleBySlug = async () => {

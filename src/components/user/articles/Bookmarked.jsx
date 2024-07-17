@@ -1,11 +1,15 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import useTitle from "../../custom/useTitle";
 
 export default function Bookmarked() {
 	const { isLoggedIn } = useSelector((state) => state.user);
 	const { bookmarked } = useSelector((state) => state.bookmark);
 	const navigate = useNavigate();
+
+	//change page title
+	useTitle("Saved Articles");
 
 	useEffect(() => {
 		if (!isLoggedIn) {
@@ -23,7 +27,7 @@ export default function Bookmarked() {
 							<thead>
 								<tr>
 									<th>ID</th>
-									<th>Image</th>
+
 									<th>Title</th>
 									<th></th>
 								</tr>
@@ -32,15 +36,7 @@ export default function Bookmarked() {
 								{bookmarked.map((article, index) => (
 									<tr key={index}>
 										<td>{(index += 1)}</td>
-										<td>
-											<img
-												src={article.image_path}
-												width={60}
-												height={60}
-												className="rounded"
-												alt={article.title}
-											></img>
-										</td>
+
 										<td>{article.title}</td>
 										<td>
 											<Link

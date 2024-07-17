@@ -7,6 +7,7 @@ import axios from "axios";
 import { BASE_URL, getConfig } from "../../helpers/config";
 
 import { toast } from "react-toastify";
+import useTitle from "../custom/useTitle";
 
 export default function UpdatePassword() {
 	const { token, isLoggedIn } = useSelector((state) => state.user);
@@ -17,6 +18,8 @@ export default function UpdatePassword() {
 	const [errors, setErrors] = useState([]);
 
 	const [loading, setLoading] = useState(false);
+	//change page title
+	useTitle("Update Password");
 
 	useEffect(() => {
 		if (!isLoggedIn) navigate("/login");

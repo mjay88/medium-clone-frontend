@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Parser } from "html-to-react";
 import { setCurrentUser } from "../../redux/slices/userSlice";
 import { bookmark } from "../../redux/slices/bookmarkSlice";
+import useTitle from "../custom/useTitle";
 
 export default function Article() {
 	const { isLoggedIn, token, user } = useSelector((state) => state.user);
@@ -17,6 +18,8 @@ export default function Article() {
 	const { slug } = useParams();
 	const dispatch = useDispatch();
 	const exists = bookmarked.find((item) => item.id === article?.id);
+
+	useTitle(`${article?.title ? article.title : ""}`);
 
 	useEffect(() => {
 		const fetchArticleBySlug = async () => {

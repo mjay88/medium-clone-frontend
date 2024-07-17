@@ -6,6 +6,7 @@ import useValidation from "../custom/useValidation.jsx";
 import Spinner from "../layouts/Spinner.jsx";
 import { BASE_URL } from "../../helpers/config.js";
 import { useSelector } from "react-redux";
+import useTitle from "../custom/useTitle.js";
 
 export default function Register() {
 	const isLoggedIn = useSelector((state) => state.user);
@@ -17,6 +18,9 @@ export default function Register() {
 	const [errors, setErrors] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+
+	//change page title
+	useTitle("Register");
 
 	useEffect(() => {
 		if (isLoggedIn) {

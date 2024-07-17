@@ -11,6 +11,7 @@ import {
 	setToken,
 	setCurrentUser,
 } from "../../redux/slices/userSlice.js";
+import useTitle from "../custom/useTitle.js";
 
 export default function Login() {
 	const { isLoggedIn } = useSelector((state) => state.user);
@@ -22,6 +23,9 @@ export default function Login() {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
+	//change page title
+	useTitle("Login");
 
 	useEffect(() => {
 		if (isLoggedIn) {
