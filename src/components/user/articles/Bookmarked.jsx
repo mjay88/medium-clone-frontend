@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import useTitle from "../../custom/useTitle";
+import { bookmark } from "../../../redux/slices/bookmarkSlice";
 
 export default function Bookmarked() {
 	const { isLoggedIn } = useSelector((state) => state.user);
 	const { bookmarked } = useSelector((state) => state.bookmark);
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	//change page title
 	useTitle("Saved Articles");
@@ -45,7 +47,14 @@ export default function Bookmarked() {
 											>
 												<i className="bi bi-eye"></i>
 											</Link>
+											<button
+												className="btn btn-sm btn-danger ms-1"
+												onClick={() => dispatch(bookmark(article))}
+											>
+												<i className="bi bi-bookmark-dash"></i>
+											</button>
 										</td>
+										<td></td>
 									</tr>
 								))}
 							</tbody>

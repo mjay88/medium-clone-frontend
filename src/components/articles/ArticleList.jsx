@@ -22,13 +22,9 @@ export default function ArticleList({ articles, fetchNextArticles, meta }) {
 
 	return (
 		<div className="col-md-8">
-			{articles.length ? (
-				articles?.map((article) => (
-					<ArticleListItem key={article.id} article={article} />
-				))
-			) : (
-				<div className="alert alert-info">No article found</div>
-			)}
+			{articles?.map((article) => (
+				<ArticleListItem key={article.id} article={article} />
+			))}
 		</div>
 	);
 }

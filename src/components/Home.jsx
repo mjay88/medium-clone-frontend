@@ -12,6 +12,7 @@ export default function Home() {
 	const { token, isLoggedIn } = useSelector((state) => state.user);
 	const [articles, setArticles] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [message, setMessage] = useState("");
 	const [articleByTag, setArticleByTag] = useState("");
 	const [articleByFollowing, setArticleByFollowing] = useState(false);
 	const [meta, setMeta] = useState({
@@ -24,22 +25,31 @@ export default function Home() {
 
 	useEffect(() => {
 		const fetchArticles = async () => {
+			setMessage("");
 			setLoading(true);
 			try {
 				if (articleByTag) {
 					const response = await axios.get(
 						`${BASE_URL}/tag/${articleByTag}/articles`
 					);
-					setArticles(response.data.data);
-					setMeta(response.data.meta);
+					if (response.data.data.length) {
+						setArticles(response.data.data);
+						setMeta(response.data.meta);
+					} else {
+						setMessage("No articles Found");
+					}
 					setLoading(false);
 				} else if (articleByFollowing) {
 					const response = await axios.get(
 						`${BASE_URL}/followings/articles`,
 						getConfig(token)
 					);
-					setArticles(response.data.data);
-					setMeta(response.data.meta);
+					if (response.data.data.length) {
+						setArticles(response.data.data);
+						setMeta(response.data.meta);
+					} else {
+						setMessage("No articles Found");
+					}
 					setLoading(false);
 				} else {
 					const response = await axios.get(`${BASE_URL}/articles`);
@@ -99,11 +109,17 @@ export default function Home() {
 						/>
 					)}
 					{/* {display all of the published articles} */}
-					<ArticleList
-						articles={articles}
-						fetchNextArticles={fetchNextArticles}
-						meta={meta}
-					/>
+					{message ? (
+						<div className="col-md-8">
+							<div className="alert alert-info">{message}</div>
+						</div>
+					) : (
+						<ArticleList
+							articles={articles}
+							fetchNextArticles={fetchNextArticles}
+							meta={meta}
+						/>
+					)}
 					{/* {display all of the tags} */}
 					<Tags
 						setArticleByTag={setArticleByTag}
