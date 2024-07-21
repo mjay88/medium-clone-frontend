@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import useTitle from "../custom/useTitle.js";
 
 export default function Register() {
-	const isLoggedIn = useSelector((state) => state.user);
+	const { isLoggedIn } = useSelector((state) => state.user);
 	const [user, setUser] = useState({
 		name: "",
 		email: "",
