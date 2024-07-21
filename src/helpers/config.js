@@ -1,4 +1,4 @@
-export const BASE_URL = "http://127.0.0.1:8000/api";
+export const BASE_URL = process.env.VITE_API_BASE_URL;
 
 export const getConfig = (token, contentType) => {
 	const config = {
